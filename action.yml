@@ -1,0 +1,39 @@
+name: 'ai-pr-guardian'
+description: 'Detect, score, and gate AI-generated and low-quality pull requests'
+author: 'ollieb89'
+
+branding:
+  icon: 'shield'
+  color: 'blue'
+
+inputs:
+  github-token:
+    description: 'GitHub token with pull-request read/write permissions'
+    required: true
+    default: ${{ github.token }}
+  threshold:
+    description: 'Minimum quality score (0-100) required to pass. Default: 60'
+    required: false
+    default: '60'
+  action:
+    description: 'Action on low-quality PRs: comment | label | close | all. Default: comment'
+    required: false
+    default: 'comment'
+  config-path:
+    description: 'Path to .github/ai-pr-guardian.yml config file'
+    required: false
+    default: '.github/ai-pr-guardian.yml'
+
+outputs:
+  score:
+    description: 'Quality score (0-100)'
+  quality-grade:
+    description: 'Grade: A, B, C, D, or F'
+  is-ai-generated:
+    description: 'Whether AI-generated patterns were detected (true/false)'
+  report:
+    description: 'Full markdown quality report'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
