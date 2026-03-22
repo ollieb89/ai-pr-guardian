@@ -1,6 +1,5 @@
 node_modules/
-*.js
-*.js.map
+coverage/
 *.d.ts
 .env
 .env.local
