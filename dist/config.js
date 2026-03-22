@@ -1,9 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DEFAULT_CONFIG = void 0;
-exports.parseConfig = parseConfig;
-exports.isIgnoredPath = isIgnoredPath;
-exports.DEFAULT_CONFIG = {
+export const DEFAULT_CONFIG = {
     threshold: 60,
     on_low_quality: 'comment',
     labels: {
@@ -15,8 +10,8 @@ exports.DEFAULT_CONFIG = {
     ignore_authors: ['dependabot[bot]', 'renovate[bot]'],
     ignore_paths: ['*.lock', 'package-lock.json', 'yarn.lock', 'pnpm-lock.yaml'],
 };
-function parseConfig(raw) {
-    const config = { ...exports.DEFAULT_CONFIG, labels: { ...exports.DEFAULT_CONFIG.labels } };
+export function parseConfig(raw) {
+    const config = { ...DEFAULT_CONFIG, labels: { ...DEFAULT_CONFIG.labels } };
     if (typeof raw.threshold === 'number') {
         config.threshold = Math.max(0, Math.min(100, raw.threshold));
     }
@@ -34,7 +29,7 @@ function parseConfig(raw) {
     }
     return config;
 }
-function isIgnoredPath(filePath, patterns) {
+export function isIgnoredPath(filePath, patterns) {
     for (const pattern of patterns) {
         const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
         if (new RegExp('^' + escaped + '$').test(filePath) || new RegExp(escaped + '$').test(filePath)) {

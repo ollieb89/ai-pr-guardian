@@ -1,109 +1,113 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import * as fs from 'fs';
-import * as path from 'path';
-import { parseConfig, DEFAULT_CONFIG, GuardianConfig } from './config';
-import { detectAiGenerated, PullRequestFile, CommitInfo } from './detector';
-import { scorepr } from './scorer';
-import { formatReport } from './reporter';
-import { computeLabels } from './labels';
+import { detectAIGenerated } from './detector.js';
+import { scoreQuality, type PRContext } from './scorer.js';
 
-async function run(): Promise<void> {
+async function run() {
   try {
-    const token = core.getInput('github-token', { required: true });
-    const thresholdInput = core.getInput('threshold');
-    const actionInput = core.getInput('action');
-    const configPath = core.getInput('config-path');
+    const failThreshold = parseInt(core.getInput('fail-on-low-score'), 10);
+    const token = core.getInput('github-token');
+
+    const context = github.context;
+    if (!context.payload.pull_request) {
+      core.info('Not a PR context, skipping');
+      return;
+    }
 
     const octokit = github.getOctokit(token);
-    const context = github.context;
-
-    if (!context.payload.pull_request) {
-      core.info('Not a pull request event — skipping');
-      return;
-    }
-
     const pr = context.payload.pull_request;
-    const prNumber = pr.number as number;
-    const prAuthor = (pr.user as { login: string }).login;
-    const owner = context.repo.owner;
-    const repo = context.repo.repo;
 
-    let config: GuardianConfig = { ...DEFAULT_CONFIG };
+    // Fetch PR details
+    const { data: prData } = await octokit.rest.pulls.get({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      pull_number: pr.number,
+    });
 
-    if (configPath) {
-      const cfgFile = path.resolve(configPath);
-      if (fs.existsSync(cfgFile)) {
-        try {
-          const raw = JSON.parse(fs.readFileSync(cfgFile, 'utf8')) as Record<string, unknown>;
-          config = parseConfig(raw);
-        } catch {
-          core.warning('Failed to parse config file — using defaults');
-        }
-      }
+    // Get commits
+    const { data: commits } = await octokit.rest.pulls.listCommits({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      pull_number: pr.number,
+    });
+
+    const commitMessages = commits.map(c => c.commit.message);
+
+    // Get changed files
+    const { data: files } = await octokit.rest.pulls.listFiles({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      pull_number: pr.number,
+    });
+
+    const filesChanged = files.map(f => f.filename);
+    const additions = files.reduce((sum, f) => sum + (f.additions || 0), 0);
+    const deletions = files.reduce((sum, f) => sum + (f.deletions || 0), 0);
+
+    // Detect AI generation
+    const detection = detectAIGenerated(
+      commitMessages,
+      prData.title,
+      prData.body || ''
+    );
+
+    // Score quality
+    const prContext: PRContext = {
+      title: prData.title,
+      body: prData.body || '',
+      filesChanged,
+      additions,
+      deletions,
+      commits: commits.map(c => ({
+        message: c.commit.message,
+        filesChanged: c.files?.map(f => f.filename) || [],
+      })),
+    };
+
+    const quality = scoreQuality(prContext);
+
+    // Prepare comment
+    let comment = '# 🛡️ AI PR Guardian Report\n\n';
+
+    if (detection.isLikelyAI) {
+      comment += `⚠️ **This PR appears to be AI-generated.** (Confidence: ${detection.confidence}%)\n\n`;
+      comment += `**Detected signals:**\n${detection.signals.map(s => `- ${s}`).join('\n')}\n\n`;
     }
 
-    if (thresholdInput) {
-      const t = parseInt(thresholdInput, 10);
-      if (!isNaN(t)) config.threshold = Math.max(0, Math.min(100, t));
-    }
-    if (actionInput && ['comment', 'label', 'close', 'all'].includes(actionInput)) {
-      config.on_low_quality = actionInput as GuardianConfig['on_low_quality'];
-    }
+    comment += `## Quality Score: ${quality.overall}/100\n\n`;
 
-    if (config.ignore_authors.includes(prAuthor)) {
-      core.info('Author ' + prAuthor + ' is in ignore list — skipping');
-      return;
-    }
+    comment += `| Metric | Score |\n`;
+    comment += `|--------|-------|\n`;
+    comment += `| Test Coverage | ${quality.testCoverage}/100 |\n`;
+    comment += `| Documentation | ${quality.documentation}/100 |\n`;
+    comment += `| Description | ${quality.description}/100 |\n\n`;
 
-    const filesResp = await octokit.rest.pulls.listFiles({ owner, repo, pull_number: prNumber, per_page: 100 });
-    const files: PullRequestFile[] = filesResp.data.map(f => ({
-      filename: f.filename,
-      additions: f.additions,
-      deletions: f.deletions,
-      changes: f.changes,
-      patch: f.patch,
-      status: f.status,
-    }));
-
-    const commitsResp = await octokit.rest.pulls.listCommits({ owner, repo, pull_number: prNumber, per_page: 100 });
-    const commits: CommitInfo[] = commitsResp.data.map(c => ({ message: c.commit.message }));
-
-    const totalAdditions = (pr.additions as number) ?? files.reduce((s, f) => s + f.additions, 0);
-    const totalDeletions = (pr.deletions as number) ?? files.reduce((s, f) => s + f.deletions, 0);
-
-    const detection = detectAiGenerated(files, commits, totalAdditions, totalDeletions);
-    const score = scorepr(files, commits, config.ignore_paths);
-    const report = formatReport(score, detection, prAuthor, config.threshold);
-    const labels = computeLabels(score, detection, config);
-
-    core.setOutput('score', String(score.total));
-    core.setOutput('quality-grade', score.grade);
-    core.setOutput('is-ai-generated', String(detection.isAiGenerated));
-    core.setOutput('report', report);
-
-    const shouldAct = score.total < config.threshold;
-    const action = config.on_low_quality;
-
-    if (action === 'comment' || action === 'all') {
-      await octokit.rest.issues.createComment({ owner, repo, issue_number: prNumber, body: report });
+    if (quality.issues.length > 0) {
+      comment += `### Issues Found\n${quality.issues.map(i => `- ❌ ${i}`).join('\n')}\n\n`;
     }
 
-    if (action === 'label' || action === 'all') {
-      for (const label of labels.add) {
-        try { await octokit.rest.issues.addLabels({ owner, repo, issue_number: prNumber, labels: [label] }); } catch { /* label may not exist */ }
-      }
+    if (quality.recommendations.length > 0) {
+      comment += `### Recommendations\n${quality.recommendations.map(r => `- 💡 ${r}`).join('\n')}\n\n`;
     }
 
-    if ((action === 'close' || action === 'all') && shouldAct) {
-      await octokit.rest.pulls.update({ owner, repo, pull_number: prNumber, state: 'closed' });
-      core.warning('Closed PR #' + prNumber + ' — quality score ' + score.total + ' below threshold ' + config.threshold);
-    }
+    comment += `---\n*AI PR Guardian • [Documentation](https://github.com/ollieb89/ai-pr-guardian)*`;
 
-    if (score.total < config.threshold) {
-      core.setFailed('PR quality score ' + score.total + '/100 is below threshold ' + config.threshold);
-    } else {
-      core.info('PR quality score ' + score.total + '/100 passed threshold ' + config.threshold);
+    // Post comment
+    await octokit.rest.issues.createComment({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      issue_number: pr.number,
+      body: comment,
+    });
+
+    core.info(`Quality score: ${quality.overall}/100`);
+    core.info(`AI detection: ${detection.isLikelyAI ? 'likely AI-generated' : 'human-written'}`);
+
+    // Fail if score is below threshold
+    if (quality.overall < failThreshold) {
+      core.setFailed(
+        `Quality score (${quality.overall}) is below threshold (${failThreshold})`
+      );
     }
   } catch (error) {
     core.setFailed(error instanceof Error ? error.message : String(error));

@@ -1,162 +1,68 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.scorepr = scorepr;
-const config_1 = require("./config");
-const TEST_FILE_PATTERNS = [
-    /\.(test|spec)\.(ts|tsx|js|jsx|py|rb|go|java|cs|php|rs)$/i,
-    /(^|\/)(tests?|__tests?__|spec|specs)\//i,
-];
-const DOC_FILE_PATTERNS = [/readme/i, /changelog/i, /\.md$/i, /docs?\//i];
-const CODE_FILE_PATTERNS = [/\.(ts|tsx|js|jsx|py|rb|go|java|cs|php|rs|c|cpp|h|hpp|swift|kt)$/i];
-function isTestFile(filename) {
-    return TEST_FILE_PATTERNS.some(p => p.test(filename));
-}
-function isDocFile(filename) {
-    return DOC_FILE_PATTERNS.some(p => p.test(filename));
-}
-function isCodeFile(filename) {
-    return CODE_FILE_PATTERNS.some(p => p.test(filename)) && !isTestFile(filename);
-}
-const GOOD_COMMIT_PATTERNS = [
-    /^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\(.+\))?!?:\s.{10,}/i,
-    /^.{20,}$/,
-];
-const BAD_COMMIT_PATTERNS = [
-    /^(update|fix|add|change|modify|improve|refactor|wip|temp|test|draft)\s*$/i,
-    /^(update|fix|add|change)s?\s+(file|code|thing|stuff)s?$/i,
-    /^[a-z]{1,8}$/i,
-    /^\.$|^\.\.$/,
-];
-function scoreCommitMessage(message) {
-    const firstLine = message.trim().split('\n')[0];
-    if (BAD_COMMIT_PATTERNS.some(p => p.test(firstLine)))
-        return 0;
-    if (GOOD_COMMIT_PATTERNS.some(p => p.test(firstLine)))
-        return 100;
-    if (firstLine.length >= 15)
-        return 60;
-    return 30;
-}
-function computeDuplicationScore(files) {
-    let totalAdded = 0;
-    let duplicateLines = 0;
-    for (const file of files) {
-        if (!file.patch)
-            continue;
-        const addedLines = file.patch.split('\n').filter(l => l.startsWith('+') && !l.startsWith('+++'));
-        const seen = new Map();
-        for (const line of addedLines) {
-            const trimmed = line.slice(1).trim();
-            if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('#'))
-                continue;
-            seen.set(trimmed, (seen.get(trimmed) || 0) + 1);
-        }
-        totalAdded += addedLines.length;
-        for (const count of seen.values()) {
-            if (count > 1)
-                duplicateLines += count - 1;
-        }
-    }
-    if (totalAdded === 0)
-        return { score: 100, detail: 'No added code lines to analyze' };
-    const ratio = duplicateLines / totalAdded;
-    const score = Math.max(0, Math.round(100 - ratio * 200));
-    return { score, detail: Math.round(ratio * 100) + '% duplicate/repetitive lines' };
-}
-function scorepr(files, commits, ignorePaths) {
-    const filteredFiles = files.filter(f => !(0, config_1.isIgnoredPath)(f.filename, ignorePaths));
-    const details = {};
-    const codeFiles = filteredFiles.filter(f => isCodeFile(f.filename));
-    const testFiles = filteredFiles.filter(f => isTestFile(f.filename));
-    let testCoverageDelta;
-    if (codeFiles.length === 0) {
-        testCoverageDelta = 100;
-        details.testCoverage = 'No code files changed — full marks';
-    }
-    else if (testFiles.length === 0) {
-        testCoverageDelta = 0;
-        details.testCoverage = codeFiles.length + ' code file(s) changed but no test files';
+export function scoreQuality(context) {
+    const issues = [];
+    const recommendations = [];
+    let scores = {
+        testCoverage: 0,
+        documentation: 0,
+        description: 0,
+    };
+    // Score test coverage
+    const hasTestFiles = context.filesChanged.some(f => /\.(test|spec)\.(ts|tsx|js|jsx)$/.test(f) ||
+        /^test(s)?\//.test(f) ||
+        /^__tests__\//.test(f));
+    if (!hasTestFiles) {
+        issues.push('No test files changed');
+        recommendations.push('Add tests for any new functionality or logic changes');
+        scores.testCoverage = 20;
     }
     else {
-        const codeAdditions = codeFiles.reduce((s, f) => s + f.additions, 0);
-        const testAdditions = testFiles.reduce((s, f) => s + f.additions, 0);
-        const ratio = Math.min(1, testAdditions / Math.max(1, codeAdditions));
-        testCoverageDelta = Math.round(ratio * 100);
-        details.testCoverage = testAdditions + ' test lines / ' + codeAdditions + ' code lines';
+        scores.testCoverage = 80;
     }
-    const commitScores = commits.map(c => scoreCommitMessage(c.message));
-    const commitMessageQuality = commitScores.length > 0
-        ? Math.round(commitScores.reduce((s, v) => s + v, 0) / commitScores.length)
-        : 50;
-    details.commitMessages = commits.length + ' commit(s), avg score ' + commitMessageQuality;
-    const { score: codeDuplication, detail: dupDetail } = computeDuplicationScore(filteredFiles);
-    details.duplication = dupDetail;
-    const uniqueDirs = new Set(filteredFiles.map(f => f.filename.split('/').slice(0, -1).join('/') || '.'));
-    let fileScatter;
-    if (filteredFiles.length <= 5) {
-        fileScatter = 100;
-        details.scatter = filteredFiles.length + ' file(s) changed';
+    // Score documentation
+    const hasDocChanges = context.filesChanged.some(f => /\.(md|mdx|txt)$|readme|doc/i.test(f));
+    const prHasExplanation = context.body.length > 100;
+    if (!hasDocChanges && !prHasExplanation) {
+        issues.push('No documentation or detailed explanation');
+        recommendations.push('Add comments, update README, or provide more context in the PR body');
+        scores.documentation = 30;
     }
-    else if (uniqueDirs.size > 10 && filteredFiles.length > 20) {
-        fileScatter = 20;
-        details.scatter = filteredFiles.length + ' files across ' + uniqueDirs.size + ' directories';
+    else if (hasDocChanges || prHasExplanation) {
+        scores.documentation = 75;
     }
-    else {
-        const scatterRatio = uniqueDirs.size / filteredFiles.length;
-        fileScatter = Math.round(Math.max(20, 100 - scatterRatio * 80));
-        details.scatter = filteredFiles.length + ' files in ' + uniqueDirs.size + ' directories';
+    // Score description quality
+    if (context.body.length < 20) {
+        issues.push('PR description is too brief');
+        recommendations.push('Explain what changed and why');
+        scores.description = 10;
     }
-    let documentation;
-    const hasDocChanges = filteredFiles.some(f => isDocFile(f.filename));
-    const hasSignificantCodeChange = filteredFiles.filter(f => isCodeFile(f.filename)).reduce((s, f) => s + f.additions, 0) > 50;
-    if (!hasSignificantCodeChange) {
-        documentation = 100;
-        details.documentation = 'No significant code changes — doc update not required';
-    }
-    else if (hasDocChanges) {
-        documentation = 100;
-        details.documentation = 'Documentation updated';
+    else if (context.body.length < 100) {
+        recommendations.push('Consider adding more detail about motivation and approach');
+        scores.description = 50;
     }
     else {
-        documentation = 20;
-        details.documentation = 'Significant code added but no documentation updated';
+        scores.description = 85;
     }
-    let totalPatched = 0;
-    let boilerplateCount = 0;
-    const BPPATTERNS = [/TODO[:;]/gi, /\bplaceholder\b/gi, /throw new Error\(['"]Not implemented['"]\)/gi, /raise NotImplementedError/gi];
-    for (const file of filteredFiles) {
-        if (!file.patch)
-            continue;
-        const lines = file.patch.split('\n').filter(l => l.startsWith('+') && !l.startsWith('+++'));
-        totalPatched += lines.length;
-        for (const line of lines) {
-            for (const p of BPPATTERNS) {
-                p.lastIndex = 0;
-                if (p.test(line)) {
-                    boilerplateCount += 1;
-                    break;
-                }
-            }
-        }
+    // Check for meaningful commit messages
+    const meaningfulCommits = context.commits.filter(c => c.message.length > 10).length;
+    if (meaningfulCommits === 0) {
+        issues.push('Commit messages lack detail');
+        recommendations.push('Use clear, descriptive commit messages');
     }
-    const boilerplateRatio = totalPatched === 0 ? 100 : Math.max(0, Math.round(100 - (boilerplateCount / totalPatched) * 500));
-    details.boilerplate = totalPatched === 0 ? 'No patched lines to analyze' : boilerplateCount + ' boilerplate line(s) of ' + totalPatched;
-    const total = Math.round(testCoverageDelta * 0.25 +
-        commitMessageQuality * 0.20 +
-        codeDuplication * 0.20 +
-        fileScatter * 0.15 +
-        documentation * 0.10 +
-        boilerplateRatio * 0.10);
-    let grade;
-    if (total >= 85)
-        grade = 'A';
-    else if (total >= 70)
-        grade = 'B';
-    else if (total >= 55)
-        grade = 'C';
-    else if (total >= 40)
-        grade = 'D';
-    else
-        grade = 'F';
-    return { testCoverageDelta, commitMessageQuality, codeDuplication, fileScatter, documentation, boilerplateRatio, total, grade, details };
+    // Check for very large changes without explanation
+    const changedLines = context.additions + context.deletions;
+    if (changedLines > 1000 && context.body.length < 150) {
+        issues.push('Large change with minimal explanation');
+        recommendations.push('For major changes, provide more detail about the approach');
+    }
+    // Bonus: clear, focused changes
+    if (context.filesChanged.length < 10 && context.body.length > 100) {
+        recommendations.push('✓ Well-focused change with clear explanation');
+    }
+    const overall = Math.round((scores.testCoverage + scores.documentation + scores.description) / 3);
+    return {
+        overall,
+        ...scores,
+        issues,
+        recommendations,
+    };
 }

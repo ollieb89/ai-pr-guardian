@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.formatReport = formatReport;
-function formatReport(score, detection, prAuthor, threshold) {
+export function formatReport(score, detection, prAuthor, threshold) {
     const gradeEmoji = { A: '🟢', B: '🟡', C: '🟠', D: '🔴', F: '💀' };
     const aiEmoji = detection.isAiGenerated ? '🤖' : '👤';
     const lines = [

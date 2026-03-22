@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1774196311609" clover="3.2.0">
+  <project timestamp="1774196311609" name="All files">
+    <metrics statements="266" coveredstatements="192" conditionals="135" coveredconditionals="93" methods="45" coveredmethods="40" elements="446" coveredelements="325" complexity="0" loc="266" ncloc="266" packages="1" files="6" classes="6"/>
+    <file name="config.ts" path="/home/ollie/Development/Projects/ai-pr-guardian/src/config.ts">
+      <metrics statements="20" coveredstatements="20" conditionals="15" coveredconditionals="15" methods="4" coveredmethods="4"/>
+      <line num="14" count="3" type="stmt"/>
+      <line num="27" count="3" type="stmt"/>
+      <line num="28" count="12" type="stmt"/>
+      <line num="30" count="12" type="cond" truecount="1" falsecount="0"/>
+      <line num="31" count="3" type="stmt"/>
+      <line num="33" count="12" type="cond" truecount="5" falsecount="0"/>
+      <line num="34" count="4" type="stmt"/>
+      <line num="36" count="12" type="cond" truecount="4" falsecount="0"/>
+      <line num="37" count="1" type="stmt"/>
+      <line num="39" count="12" type="cond" truecount="1" falsecount="0"/>
+      <line num="40" count="2" type="stmt"/>
+      <line num="42" count="12" type="cond" truecount="1" falsecount="0"/>
+      <line num="43" count="2" type="stmt"/>
+      <line num="46" count="12" type="stmt"/>
+      <line num="49" count="3" type="stmt"/>
+      <line num="50" count="42" type="stmt"/>
+      <line num="51" count="5" type="stmt"/>
+      <line num="52" count="5" type="cond" truecount="3" falsecount="0"/>
+      <line num="53" count="4" type="stmt"/>
+      <line num="56" count="38" type="stmt"/>
+    </file>
+    <file name="detector.ts" path="/home/ollie/Development/Projects/ai-pr-guardian/src/detector.ts">
+      <metrics statements="49" coveredstatements="49" conditionals="24" coveredconditionals="20" methods="9" coveredmethods="9"/>
+      <line num="20" count="1" type="stmt"/>
+      <line num="27" count="1" type="stmt"/>
+      <line num="33" count="1" type="stmt"/>
+      <line num="39" count="7" type="stmt"/>
+      <line num="40" count="7" type="stmt"/>
+      <line num="42" count="7" type="stmt"/>
+      <line num="43" count="7" type="stmt"/>
+      <line num="44" count="7" type="stmt"/>
+      <line num="45" count="7" type="cond" truecount="0" falsecount="1"/>
+      <line num="46" count="7" type="stmt"/>
+      <line num="47" count="7" type="stmt"/>
+      <line num="48" count="7" type="stmt"/>
+      <line num="49" count="71" type="stmt"/>
+      <line num="50" count="134" type="stmt"/>
+      <line num="51" count="134" type="cond" truecount="1" falsecount="0"/>
+      <line num="52" count="50" type="stmt"/>
+      <line num="53" count="50" type="stmt"/>
+      <line num="58" count="7" type="cond" truecount="3" falsecount="0"/>
+      <line num="59" count="2" type="stmt"/>
+      <line num="60" count="2" type="stmt"/>
+      <line num="63" count="7" type="cond" truecount="3" falsecount="0"/>
+      <line num="64" count="2" type="stmt"/>
+      <line num="65" count="2" type="stmt"/>
+      <line num="68" count="7" type="stmt"/>
+      <line num="69" count="7" type="cond" truecount="0" falsecount="1"/>
+      <line num="70" count="71" type="cond" truecount="2" falsecount="0"/>
+      <line num="71" count="7" type="cond" truecount="1" falsecount="0"/>
+      <line num="72" count="63" type="stmt"/>
+      <line num="73" count="63" type="stmt"/>
+      <line num="74" count="3" type="cond" truecount="3" falsecount="0"/>
+      <line num="75" count="2" type="stmt"/>
+      <line num="76" count="2" type="stmt"/>
+      <line num="77" count="2" type="stmt"/>
+      <line num="82" count="7" type="stmt"/>
+      <line num="83" count="17" type="stmt"/>
+      <line num="85" count="7" type="cond" truecount="1" falsecount="0"/>
+      <line num="86" count="2" type="stmt"/>
+      <line num="87" count="2" type="cond" truecount="1" falsecount="1"/>
+      <line num="90" count="7" type="stmt"/>
+      <line num="91" count="7" type="cond" truecount="0" falsecount="1"/>
+      <line num="92" count="71" type="cond" truecount="2" falsecount="0"/>
+      <line num="93" count="7" type="stmt"/>
+      <line num="94" count="7" type="cond" truecount="3" falsecount="0"/>
+      <line num="95" count="3" type="stmt"/>
+      <line num="96" count="3" type="stmt"/>
+      <line num="97" count="3" type="stmt"/>
+      <line num="101" count="7" type="stmt"/>
+      <line num="102" count="7" type="stmt"/>
+      <line num="104" count="7" type="stmt"/>
+    </file>
+    <file name="index.ts" path="/home/ollie/Development/Projects/ai-pr-guardian/src/index.ts">
+      <metrics statements="69" coveredstatements="0" conditionals="27" coveredconditionals="0" methods="5" coveredmethods="0"/>
+      <line num="1" count="0" type="stmt"/>
+      <line num="2" count="0" type="stmt"/>
+      <line num="3" count="0" type="stmt"/>
+      <line num="4" count="0" type="stmt"/>
+      <line num="5" count="0" type="stmt"/>
+      <line num="6" count="0" type="stmt"/>
+      <line num="7" count="0" type="stmt"/>
+      <line num="8" count="0" type="stmt"/>
+      <line num="9" count="0" type="stmt"/>
+      <line num="12" count="0" type="stmt"/>
+      <line num="13" count="0" type="stmt"/>
+      <line num="14" count="0" type="stmt"/>
+      <line num="15" count="0" type="stmt"/>
+      <line num="16" count="0" type="stmt"/>
+      <line num="18" count="0" type="stmt"/>
+      <line num="19" count="0" type="stmt"/>
+      <line num="21" count="0" type="cond" truecount="0" falsecount="1"/>
+      <line num="22" count="0" type="stmt"/>
+      <line num="23" count="0" type="stmt"/>
+      <line num="26" count="0" type="stmt"/>
+      <line num="27" count="0" type="stmt"/>
+      <line num="28" count="0" type="stmt"/>
+      <line num="29" count="0" type="stmt"/>
+      <line num="30" count="0" type="stmt"/>
+      <line num="32" count="0" type="stmt"/>
+      <line num="34" count="0" type="cond" truecount="0" falsecount="1"/>
+      <line num="35" count="0" type="stmt"/>
+      <line num="36" count="0" type="cond" truecount="0" falsecount="1"/>
+      <line num="37" count="0" type="stmt"/>
+      <line num="38" count="0" type="stmt"/>
+      <line num="39" count="0" type="stmt"/>
+      <line num="41" count="0" type="stmt"/>
+      <line num="46" count="0" type="cond" truecount="0" falsecount="1"/>
+      <line num="47" count="0" type="stmt"/>
+      <line num="48" count="0" type="cond" truecount="0" falsecount="1"/>
+      <line num="50" count="0" type="cond" truecount="0" falsecount="3"/>
+      <line num="51" count="0" type="stmt"/>
+      <line num="54" count="0" type="cond" truecount="0" falsecount="1"/>
+      <line num="55" count="0" type="stmt"/>
+      <line num="56" count="0" type="stmt"/>
+      <line num="59" count="0" type="stmt"/>
+      <line num="60" count="0" type="stmt"/>
+      <line num="69" count="0" type="stmt"/>
+      <line num="70" count="0" type="stmt"/>
+      <line num="72" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="73" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="75" count="0" type="stmt"/>
+      <line num="76" count="0" type="stmt"/>
+      <line num="77" count="0" type="stmt"/>
+      <line num="78" count="0" type="stmt"/>
+      <line num="80" count="0" type="stmt"/>
+      <line num="81" count="0" type="stmt"/>
+      <line num="82" count="0" type="stmt"/>
+      <line num="83" count="0" type="stmt"/>
+      <line num="85" count="0" type="stmt"/>
+      <line num="86" count="0" type="stmt"/>
+      <line num="88" count="0" type="cond" truecount="0" falsecount="3"/>
+      <line num="89" count="0" type="stmt"/>
+      <line num="92" count="0" type="cond" truecount="0" falsecount="3"/>
+      <line num="93" count="0" type="stmt"/>
+      <line num="94" count="0" type="stmt"/>
+      <line num="98" count="0" type="cond" truecount="0" falsecount="4"/>
+      <line num="99" count="0" type="stmt"/>
+      <line num="100" count="0" type="stmt"/>
+      <line num="103" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="104" count="0" type="stmt"/>
+      <line num="106" count="0" type="stmt"/>
+      <line num="109" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="113" count="0" type="stmt"/>
+    </file>
+    <file name="labels.ts" path="/home/ollie/Development/Projects/ai-pr-guardian/src/labels.ts">
+      <metrics statements="16" coveredstatements="16" conditionals="6" coveredconditionals="6" methods="2" coveredmethods="2"/>
+      <line num="10" count="1" type="stmt"/>
+      <line num="15" count="7" type="stmt"/>
+      <line num="16" count="7" type="stmt"/>
+      <line num="18" count="7" type="cond" truecount="2" falsecount="0"/>
+      <line num="19" count="4" type="stmt"/>
+      <line num="20" count="4" type="stmt"/>
+      <line num="21" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="22" count="2" type="stmt"/>
+      <line num="23" count="2" type="stmt"/>
+      <line num="25" count="1" type="stmt"/>
+      <line num="26" count="1" type="stmt"/>
+      <line num="29" count="7" type="cond" truecount="2" falsecount="0"/>
+      <line num="30" count="3" type="stmt"/>
+      <line num="32" count="4" type="stmt"/>
+      <line num="35" count="7" type="stmt"/>
+      <line num="37" count="18" type="stmt"/>
+    </file>
+    <file name="reporter.ts" path="/home/ollie/Development/Projects/ai-pr-guardian/src/reporter.ts">
+      <metrics statements="21" coveredstatements="21" conditionals="13" coveredconditionals="7" methods="1" coveredmethods="1"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="10" count="9" type="stmt"/>
+      <line num="11" count="9" type="cond" truecount="2" falsecount="0"/>
+      <line num="13" count="9" type="stmt"/>
+      <line num="37" count="9" type="cond" truecount="1" falsecount="0"/>
+      <line num="38" count="1" type="stmt"/>
+      <line num="39" count="1" type="stmt"/>
+      <line num="40" count="1" type="stmt"/>
+      <line num="42" count="1" type="stmt"/>
+      <line num="45" count="9" type="cond" truecount="2" falsecount="0"/>
+      <line num="46" count="2" type="stmt"/>
+      <line num="53" count="2" type="cond" truecount="0" falsecount="1"/>
+      <line num="54" count="2" type="cond" truecount="0" falsecount="1"/>
+      <line num="55" count="2" type="cond" truecount="0" falsecount="1"/>
+      <line num="56" count="2" type="cond" truecount="0" falsecount="1"/>
+      <line num="57" count="2" type="cond" truecount="0" falsecount="1"/>
+      <line num="58" count="2" type="cond" truecount="0" falsecount="1"/>
+      <line num="59" count="2" type="stmt"/>
+      <line num="61" count="7" type="stmt"/>
+      <line num="64" count="9" type="stmt"/>
+      <line num="66" count="9" type="stmt"/>
+    </file>
+    <file name="scorer.ts" path="/home/ollie/Development/Projects/ai-pr-guardian/src/scorer.ts">
+      <metrics statements="91" coveredstatements="86" conditionals="50" coveredconditionals="45" methods="24" coveredmethods="24"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="16" count="1" type="stmt"/>
+      <line num="20" count="1" type="stmt"/>
+      <line num="21" count="1" type="stmt"/>
+      <line num="24" count="211" type="stmt"/>
+      <line num="27" count="142" type="stmt"/>
+      <line num="30" count="74" type="cond" truecount="2" falsecount="0"/>
+      <line num="33" count="1" type="stmt"/>
+      <line num="37" count="1" type="stmt"/>
+      <line num="45" count="12" type="stmt"/>
+      <line num="46" count="42" type="cond" truecount="1" falsecount="0"/>
+      <line num="47" count="12" type="cond" truecount="1" falsecount="0"/>
+      <line num="48" count="2" type="cond" truecount="1" falsecount="0"/>
+      <line num="49" count="0" type="stmt"/>
+      <line num="53" count="12" type="stmt"/>
+      <line num="54" count="12" type="stmt"/>
+      <line num="55" count="12" type="stmt"/>
+      <line num="56" count="37" type="cond" truecount="1" falsecount="0"/>
+      <line num="57" count="249" type="cond" truecount="2" falsecount="0"/>
+      <line num="58" count="4" type="stmt"/>
+      <line num="59" count="4" type="stmt"/>
+      <line num="60" count="47" type="stmt"/>
+      <line num="61" count="47" type="cond" truecount="3" falsecount="1"/>
+      <line num="62" count="47" type="cond" truecount="2" falsecount="0"/>
+      <line num="64" count="4" type="stmt"/>
+      <line num="65" count="4" type="stmt"/>
+      <line num="66" count="4" type="cond" truecount="1" falsecount="0"/>
+      <line num="69" count="12" type="cond" truecount="1" falsecount="0"/>
+      <line num="70" count="4" type="stmt"/>
+      <line num="71" count="4" type="stmt"/>
+      <line num="72" count="4" type="stmt"/>
+      <line num="75" count="1" type="stmt"/>
+      <line num="80" count="38" type="stmt"/>
+      <line num="81" count="12" type="stmt"/>
+      <line num="83" count="37" type="stmt"/>
+      <line num="84" count="37" type="stmt"/>
+      <line num="86" count="12" type="cond" truecount="2" falsecount="0"/>
+      <line num="87" count="2" type="stmt"/>
+      <line num="88" count="2" type="stmt"/>
+      <line num="89" count="10" type="cond" truecount="2" falsecount="0"/>
+      <line num="90" count="9" type="stmt"/>
+      <line num="91" count="9" type="stmt"/>
+      <line num="93" count="1" type="stmt"/>
+      <line num="94" count="1" type="stmt"/>
+      <line num="95" count="1" type="stmt"/>
+      <line num="96" count="1" type="stmt"/>
+      <line num="97" count="1" type="stmt"/>
+      <line num="100" count="12" type="stmt"/>
+      <line num="101" count="12" type="cond" truecount="1" falsecount="1"/>
+      <line num="102" count="12" type="stmt"/>
+      <line num="104" count="12" type="stmt"/>
+      <line num="106" count="12" type="stmt"/>
+      <line num="107" count="12" type="stmt"/>
+      <line num="109" count="37" type="cond" truecount="2" falsecount="0"/>
+      <line num="111" count="12" type="cond" truecount="2" falsecount="0"/>
+      <line num="112" count="11" type="stmt"/>
+      <line num="113" count="11" type="stmt"/>
+      <line num="114" count="1" type="cond" truecount="3" falsecount="1"/>
+      <line num="115" count="1" type="stmt"/>
+      <line num="116" count="1" type="stmt"/>
+      <line num="118" count="0" type="stmt"/>
+      <line num="119" count="0" type="stmt"/>
+      <line num="120" count="0" type="stmt"/>
+      <line num="124" count="37" type="stmt"/>
+      <line num="125" count="37" type="stmt"/>
+      <line num="126" count="12" type="cond" truecount="2" falsecount="0"/>
+      <line num="127" count="9" type="stmt"/>
+      <line num="128" count="9" type="stmt"/>
+      <line num="129" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="130" count="1" type="stmt"/>
+      <line num="131" count="1" type="stmt"/>
+      <line num="133" count="2" type="stmt"/>
+      <line num="134" count="2" type="stmt"/>
+      <line num="137" count="12" type="stmt"/>
+      <line num="138" count="12" type="stmt"/>
+      <line num="139" count="12" type="stmt"/>
+      <line num="140" count="12" type="stmt"/>
+      <line num="141" count="37" type="cond" truecount="1" falsecount="0"/>
+      <line num="142" count="249" type="cond" truecount="2" falsecount="0"/>
+      <line num="143" count="4" type="stmt"/>
+      <line num="144" count="4" type="stmt"/>
+      <line num="145" count="188" type="cond" truecount="0" falsecount="1"/>
+      <line num="148" count="12" type="cond" truecount="2" falsecount="0"/>
+      <line num="149" count="12" type="cond" truecount="2" falsecount="0"/>
+      <line num="151" count="12" type="stmt"/>
+      <line num="161" count="12" type="cond" truecount="2" falsecount="0"/>
+      <line num="162" count="9" type="cond" truecount="2" falsecount="0"/>
+      <line num="163" count="7" type="cond" truecount="2" falsecount="0"/>
+      <line num="164" count="1" type="cond" truecount="1" falsecount="1"/>
+      <line num="165" count="0" type="stmt"/>
+      <line num="167" count="12" type="stmt"/>
+    </file>
+  </project>
+</coverage>

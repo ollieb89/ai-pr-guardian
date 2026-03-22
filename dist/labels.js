@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.computeLabels = computeLabels;
-function computeLabels(score, detection, config) {
+export function computeLabels(score, detection, config) {
     const add = [];
     const remove = [];
     if (score.total >= 70) {
