@@ -1,5 +1,7 @@
 # AI PR Guardian
 
+[![AI DevOps Actions Suite](https://img.shields.io/badge/AI%20DevOps%20Actions-Suite-blue?logo=github)](https://github.com/ollieb89/ai-devops-actions)
+
 Detect and score AI-generated pull requests. Automatically analyzes PRs for quality issues and provides constructive feedback.
 
 ## Features
